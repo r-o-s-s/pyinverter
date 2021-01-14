@@ -130,3 +130,6 @@ dmypy.json
 
 # Poetry settings
 poetry.toml
+
+# IDE Settings
+.vscode/

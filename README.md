@@ -14,6 +14,6 @@ pyinverter is avaliable on [pypi](https://pypi.org/project/pyinverter/) and can 
 pip install pyinverter
 ```
 
-## How to set up the devlopment enviroment
+## How to set up the development enviroment
 
 Simply follow the instructions in the [developing README](./docs/DEVELOPING.md)
