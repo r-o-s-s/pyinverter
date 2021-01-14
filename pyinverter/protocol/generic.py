@@ -1,4 +1,4 @@
-""""pyinverter - Python interface to most common inverters
+""" pyinverter - Python interface to most common inverters
     Copyright (C) 2021  Ross Hogan
 
     This program is free software: you can redistribute it and/or modify
@@ -22,11 +22,11 @@ class GenericProtocol:
 
     def __init__(self, line_ending: str = "\n"):
         self._interface = None
-        self._line_ending = line_ending
+        self._line_ending = bytearray(line_ending, "utf-8")
         self.name = self.__class__.__name__
 
     # These methods are expected to be implemented differently for each protocol
-    def calculate_crc(self, message: bytearray) -> bytearray:
+    def _calculate_crc(self, message: bytearray) -> bytearray:
         """ Calculates the CRC of the given message. """
         # Our default is to do nothing
         return b""
@@ -36,17 +36,17 @@ class GenericProtocol:
         """ Connect the protocol to the outside world through an interface. """
         self._interface = interface
 
-    def add_crc(self, message: str) -> bytearray:
+    def _add_crc(self, message: str) -> bytearray:
         """ Calculates the CRC of the message and appends it to the message. """
         response = bytearray(message, "utf-8")
-        return response + self.calculate_crc(response)
+        return response + self._calculate_crc(response)
 
     # Internal methods that are not expected to change
     def _send(self, message: str):
         """Sends a message to the inverter using the interface.
         It will add the line_ending and an optional CRC.
         """
-        self._interface.send(self.add_crc(message) + self._line_ending)
+        self._interface.send(self._add_crc(message) + self._line_ending)
 
     def _recv(self) -> str:
         """Reads a message from the inverter using the interface.
@@ -69,10 +69,9 @@ class GenericProtocol:
 class GenericCommand:
     """ A generic command class with the basic framework of a command. """
 
-    def __init__(self, protocol: GenericProtocol):
+    def __init__(self):
         self._str_help = ""
         self._str_description = ""
-        self._protocol = protocol
 
     @property
     def get(self):
